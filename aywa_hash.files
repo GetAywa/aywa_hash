@@ -32,6 +32,7 @@ yespower/benchmark.c
 yespower/insecure_memzero.h
 yespower/sha256.c
 yespower/sha256.h
+yespower/sph_yespower.h
 yespower/sysendian.h
 yespower/tests.c
 yespower/yespower-opt.c
