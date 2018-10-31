@@ -7,6 +7,7 @@ extern "C" {
 
 void x11_hash(const char* input, char* output);
 void yespower_hash(const char *input, char *output);
+void yespowerhash(const char *input, char *output);
 void groestlkeccak_hash(const char* input, char* output);
 #ifdef __cplusplus
 }
