@@ -1,3 +1,5 @@
+LICENSE
+README.md
 setup.py
 sha3/aes_helper.c
 sha3/blake.c
@@ -28,6 +30,8 @@ test.py
 x11hash.c
 x11hash.h
 x11module.c
+yespower/README
+yespower/TESTS-OK
 yespower/benchmark.c
 yespower/insecure_memzero.h
 yespower/sha256.c

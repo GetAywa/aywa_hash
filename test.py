@@ -25,12 +25,15 @@ import unittest
 #     "nextblockhash" : "00000bafcc571ece7c5c436f887547ef41b574e10ef7cc6937873a74ef1efeae"
 # }
 
-header_hex = ("02000000"+
-            "c67a40f3cd5804437a108f105533739c37e6229bc1adcab385140b59fd0f0000" +
-            "c71c1aade44bf8425bec0deb611c20b16da3442818ef20489ca1e2512be43eef"
-            "814cdb52" +
-            "f0ff0f1e" +
-            "dbf70101")
+#header_hex = ("02000000"+
+#            "a67a40f3cd5804437a108f105533739c37e6229bc1adcab385140b59fd0f0000" +
+#            "c71c1aade44bf8425bec0deb611c20b16da3442818ef20489ca1e2512be43eef"
+#            "814cdb52" +
+#            "f0ff0f1e" +
+#            "dbf70101")
+
+
+header_hex = ("000000218cd78de38571f277dbd76b4b12226feaaf3e35af2f2fdefea3aa24bff8b20200367ffa54520e5429613967fd74cacf28b0a668e01405284faddedef6dda3f953f950b15bffff021f66050000")
 
 best_hash = '41105aae733ba8a38ed7e61a87bdae72d7611693d654cf8a4efa9a18aef99a0f'
 
