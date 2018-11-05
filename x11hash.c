@@ -21,81 +21,112 @@
 #include "sha3/sph_simd.h"
 #include "sha3/sph_echo.h"
 
+
+///** Compute the 256-bit hash of an object. */
+//inline void Hash(const T1 pbegin, const T1 pend, uint32_t result[8])
+//{
+//    static const unsigned char pblank[1] = {};
+//    //uint256 result;
+//    CHash256().Write(pbegin == pend ? pblank : (const unsigned char*)&pbegin[0], (pend - pbegin) * sizeof(pbegin[0]))
+//              .Finalize((unsigned char*)&result);
+//    return result;
+//}
+
+
 //int yespower_hash(const char *input, char *output)
 //{
 //	yespower_params_t params = {YESPOWER_1_0, 2048, 32, NULL, 0};
 //	return yespower_tls(input, 80, &params, (yespower_binary_t *) output);
 //}
 
-
-void x11_hash(const char* input, char* output)
+/*void GroestlKeccakHash(const char * input_gk, char * output_gk)
 {
-    sph_blake512_context     ctx_blake;
-    sph_bmw512_context       ctx_bmw;
+    uint32_t hashA[16], hashB[16];
+
     sph_groestl512_context   ctx_groestl;
-    sph_skein512_context     ctx_skein;
-    sph_jh512_context        ctx_jh;
-    sph_keccak512_context    ctx_keccak;
-
-    sph_luffa512_context		ctx_luffa1;
-    sph_cubehash512_context		ctx_cubehash1;
-    sph_shavite512_context		ctx_shavite1;
-    sph_simd512_context		ctx_simd1;
-    sph_echo512_context		ctx_echo1;
-
-    //these uint512 in the c++ source of the client are backed by an array of uint32
-    uint32_t hashA[16], hashB[16], yespower_result[32], yespower_outputs[32];
-
-    yespower_hash(input, yespower_outputs);
-    //memcpy(yespower_result, yespower_outputs, 32);
-
-
-//    sph_blake512_init(&ctx_blake);
-//    sph_blake512 (&ctx_blake, input, 80);
-//    sph_blake512_close (&ctx_blake, hashA);
-
-//    sph_bmw512_init(&ctx_bmw);
-//    sph_bmw512 (&ctx_bmw, hashA, 64);
-//    sph_bmw512_close(&ctx_bmw, hashB);
-
     sph_groestl512_init(&ctx_groestl);
-    sph_groestl512 (&ctx_groestl, yespower_outputs, 64);
+    sph_groestl512 (&ctx_groestl, input_gk, 64);
     sph_groestl512_close(&ctx_groestl, hashA);
 
-//    sph_skein512_init(&ctx_skein);
-//    sph_skein512 (&ctx_skein, hashA, 64);
-//    sph_skein512_close (&ctx_skein, hashB);
-
-//    sph_jh512_init(&ctx_jh);
-//    sph_jh512 (&ctx_jh, hashB, 64);
-//    sph_jh512_close(&ctx_jh, hashA);
-
+    sph_keccak512_context    ctx_keccak;
     sph_keccak512_init(&ctx_keccak);
     sph_keccak512 (&ctx_keccak, hashA, 64);
     sph_keccak512_close(&ctx_keccak, hashB);
 
-//    sph_luffa512_init (&ctx_luffa1);
-//    sph_luffa512 (&ctx_luffa1, hashB, 64);
-//    sph_luffa512_close (&ctx_luffa1, hashA);
+    memcpy(output_gk, hashB, 32);
 
-//    sph_cubehash512_init (&ctx_cubehash1);
-//    sph_cubehash512 (&ctx_cubehash1, hashA, 64);
-//    sph_cubehash512_close(&ctx_cubehash1, hashB);
 
-//    sph_shavite512_init (&ctx_shavite1);
-//    sph_shavite512 (&ctx_shavite1, hashB, 64);
-//    sph_shavite512_close(&ctx_shavite1, hashA);
+    //output = input;
+}*/
 
-//    sph_simd512_init (&ctx_simd1);
-//    sph_simd512 (&ctx_simd1, hashA, 64);
-//    sph_simd512_close(&ctx_simd1, hashB);
-
-//    sph_echo512_init (&ctx_echo1);
-//    sph_echo512 (&ctx_echo1, hashB, 64);
-//    sph_echo512_close(&ctx_echo1, hashA);
-
-    //memcpy(output, hashB, 32);
+void GroestlKeccakHash(const char* input, char* output)
+{
+    sph_groestl512_context   ctx_groestl;
+    sph_keccak512_context    ctx_keccak;
+    uint32_t hashA[16], hashB[16];
+    sph_groestl512_init(&ctx_groestl);
+    sph_groestl512 (&ctx_groestl, input, 64);
+    sph_groestl512_close(&ctx_groestl, hashA);
+    sph_keccak512_init(&ctx_keccak);
+    sph_keccak512 (&ctx_keccak, (const void*)hashA, 64);
+    sph_keccak512_close(&ctx_keccak, (void*)hashB);
     memcpy(output, hashB, 32);
+}
+
+
+void x11_hash(const char* input, char* output)
+{
+    uint32_t yespower_output[8], gk_input[128];
+    yespower_hash(input, yespower_output);
+    memcpy(gk_input, yespower_output, 128);
+    GroestlKeccakHash(gk_input, output);
+
+/* version 101
+     //char * yespower_output[160], * groestlkeccak_input;
+    uint8_t yespower_output_u256[32], groestlkeccak_input[32];
+    yespower_hash(input, yespower_output_u256);
+    memcpy(groestlkeccak_input, yespower_output_u256, 32);
+
+//    for(int j = 0; j < 16; j++){  // reverse output
+//         int t = groestlkeccak_input[j];
+//         groestlkeccak_input[j] = groestlkeccak_input[32- j - 1];
+//         groestlkeccak_input[32 - j - 1] = t;
+//     }
+
+    //memcpy(output, groestlkeccak_input, 32);
+
+    GroestlKeccakHash((char *)groestlkeccak_input, output);
+*/
+
+ /* version 100
+    sph_groestl512_context   ctx_groestl;
+    sph_keccak512_context    ctx_keccak;
+
+    //these uint512 in the c++ source of the client are backed by an array of uint32
+    uint32_t hashA[16], hashB[16];//, yespower_input[32], yespower_output[32];
+    char * yespower_output;//* yespower_input;
+
+//    void * rawData;
+//    memcpy(rawData, input, 160);
+//    char *src = rawData;
+
+    yespower_hash(input, &yespower_output);
+    //memcpy(yespower_output, hashA, 64);
+
+
+//    sph_blake512 (&ctx_blake, input, 80);
+
+    sph_groestl512_init(&ctx_groestl);
+    sph_groestl512 (&ctx_groestl, &yespower_output, 64);
+    sph_groestl512_close(&ctx_groestl, &hashA);
+
+    sph_keccak512_init(&ctx_keccak);
+    sph_keccak512 (&ctx_keccak, &hashA, 64);
+    sph_keccak512_close(&ctx_keccak, &hashB);
+
+    memcpy((void*)output, (void*)hashB, 32);
+    //memcpy(output, yespower_input, 32);
+    */
 }
 
 /*
@@ -189,5 +220,18 @@ void x11_hash2(const char* input, char* output)
 
     memcpy(output, result, 32);
     */
+
+
+//*------Aywa Hash Power--------
+//template<typename T>
+//uint256 SerializeHashYespower(const T& obj, int nType=SER_GETHASH, int nVersion=PROTOCOL_VERSION)
+//{
+//    CHashWriterYespower ss(nType, nVersion);
+//    ss << obj;
+//    return ss.GetHash();
+//}
+
+
+
 
 
