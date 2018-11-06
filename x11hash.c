@@ -66,20 +66,21 @@ void GroestlKeccakHash(const char* input, char* output)
     uint32_t hashA[16], hashB[16];
     sph_groestl512_init(&ctx_groestl);
     sph_groestl512 (&ctx_groestl, input, 64);
-    sph_groestl512_close(&ctx_groestl, hashA);
+    sph_groestl512_close(&ctx_groestl, &hashA);
     sph_keccak512_init(&ctx_keccak);
-    sph_keccak512 (&ctx_keccak, hashA, 64);
-    sph_keccak512_close(&ctx_keccak, hashB);
-    memcpy(output, hashB, 32);
+    sph_keccak512 (&ctx_keccak, &hashA, 64);
+    sph_keccak512_close(&ctx_keccak, &hashB);
+    memcpy(output, &hashB, 32);
 }
 
 
 void x11_hash(const char* input, char* output)
 {
-    uint32_t yespower_output[8], gk_input[32];
-    yespower_hash(input, yespower_output);
-    memcpy(gk_input, yespower_output, 80);
-    GroestlKeccakHash(gk_input, output);
+    uint32_t yespower_output[8] ={0}, gk_input[16]={0};
+    //uint8_t yespower_output[64], gk_input[64];
+    yespower_hash(input, &yespower_output);
+    memcpy(gk_input, &yespower_output, 32);
+    GroestlKeccakHash(&gk_input, output);
 
 /* version 101
      //char * yespower_output[160], * groestlkeccak_input;
