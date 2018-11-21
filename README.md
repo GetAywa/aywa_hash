@@ -1,7 +1,7 @@
-x11_hash (v1.4)
+Aywa_hash (v0.1)
 ===========================
 
-Python module for Dash's X11 hashing.
+Python module for Aywa (YesPoWer->Groestl->Keccak) hashing.
 
 
 Install
