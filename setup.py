@@ -20,6 +20,6 @@ x11_hash_module = Extension('x11_hash',
                                include_dirs=['.', './yespower','./sha3'])
 
 setup (name = 'x11_hash',
-       version = '0.1',
+       version = '1.4',
        description = 'Binding for AywaHash proof of work hashing.',
        ext_modules = [x11_hash_module])
