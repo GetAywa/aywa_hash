@@ -27,9 +27,9 @@ sha3/sph_skein.h
 sha3/sph_types.h
 sha3/sph_yespower.h
 test.py
-x11hash.c
-x11hash.h
-x11module.c
+aywahash.c
+aywahash.h
+aywamodule.c
 yespower/README
 yespower/TESTS-OK
 yespower/benchmark.c

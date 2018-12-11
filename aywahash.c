@@ -1,4 +1,4 @@
-#include "x11hash.h"
+#include "aywahash.h"
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
@@ -23,7 +23,7 @@ void GroestlKeccakHash(const char* input, char* output)
 }
 
 
-void x11_hash(const char* input, char* output)
+void aywa_hash(const char* input, char* output)
 {
     uint32_t yespower_output[8] ={0}, gk_input[16]={0};
     yespower_hash(input, &yespower_output);
